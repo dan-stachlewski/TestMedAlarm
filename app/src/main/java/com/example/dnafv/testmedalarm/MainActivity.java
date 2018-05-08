@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.example.dnafv.testmedalarm.model.DataItem;
+
 import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
@@ -41,12 +43,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //We can now Test the dataItem Class:
+        /**
+         * Declare a new instance of the dataItem class
+         * the Object will be named item
+         * use a version of the Constructor method DataItem() that receives all of the values
+         * DataItems have been successfully saved and displayed in the app via the DataItem Class
+         * */
+        DataItem item =
+                new DataItem(null, "My menu item", "a category", "a description", 1, 9.95, "apple_pie.jpg");
+
+
         //This links the variable tvOut to the TextView within the MainActivity
         // Activity activity_main.xml > content_main.xml
         tvOut = (TextView)findViewById(R.id.tvOut);
         //This changes the text being displayed from Hello World! to Ready to code in the TextView
         // within the MainActivity Activity activity_main.xml > content_main.xml
-        tvOut.setText("Ready to code!");
+        //tvOut.setText("Ready to code!");
+        tvOut.setText(item.toString());
     }
 
     //This method loads the menu that sits at the top of the device
