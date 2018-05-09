@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.dnafv.testmedalarm.model.DataItem;
 
@@ -42,10 +43,11 @@ public class DataItemAdapter extends RecyclerView.Adapter<DataItemAdapter.ViewHo
     //This method is called each time the adapter encounters a NEW dataItem that needs to
     // be displayed - it passes the reference to the ViewHolder and the position of the data item
     // in the collection. The Job of the OnBindViewHolder is to take that data object & display its
-    // values
+    // values - this is where we supply the data we want to display to the user
+    // & set up event handlers
     @Override
     public void onBindViewHolder(DataItemAdapter.ViewHolder holder, int position) {
-        DataItem item = mItems.get(position);
+        final DataItem item = mItems.get(position);
 
         try {
             //We are getting tvName & imageView from the holder object
@@ -57,6 +59,22 @@ public class DataItemAdapter extends RecyclerView.Adapter<DataItemAdapter.ViewHo
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        //Add onClickListener to the View that opens a Single DataItem when chosen from the list
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext, "You selected " + item.getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(mContext, "You long clicked " + item.getName(), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+
     }
 
     //The below method returns the # of dataItems in the collection
@@ -73,11 +91,17 @@ public class DataItemAdapter extends RecyclerView.Adapter<DataItemAdapter.ViewHo
         //This retrieved data is being saved as public fields of the ViewHolder ClassW
         public TextView tvName;
         public ImageView imageView;
+        //The view that is displayed when a list item is clicked - this is a view that represents a
+        // single data item
+        public View mView;
         public ViewHolder(View itemView) {
             super(itemView);
 
             tvName = (TextView) itemView.findViewById(R.id.itemNameText);
             imageView = (ImageView) itemView.findViewById(R.id.imageView);
+            //This view ref is available to the rest of the adapter
+            mView = itemView;
+
         }
     }
 
