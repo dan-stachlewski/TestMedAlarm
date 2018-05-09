@@ -4,18 +4,15 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.example.dnafv.testmedalarm.model.DataItem;
 import com.example.dnafv.testmedalarm.sampleData.SampleDataProvider;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,11 +84,15 @@ public class MainActivity extends AppCompatActivity {
         //Now we have to bind the adapter to the list view with a ref to the listView Object
 
         //We need to create our Custom DataAdapter
+        //DataItemAdapterListView adapter = new DataItemAdapterListView(this, dataItemList);
         DataItemAdapter adapter = new DataItemAdapter(this, dataItemList);
 
-        ListView listView = (ListView) findViewById(android.R.id.list);
+        //ListView listView = (ListView) findViewById(android.R.id.list);
+        //The recyclerView is connected to the vrItems RecyclerView in content_main.xml
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvItems);
         //Bind the 2 objects together
-        listView.setAdapter(adapter);
+        //listView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
     }
 
     //This method loads the menu that sits at the top of the device
