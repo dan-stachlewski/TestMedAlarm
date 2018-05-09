@@ -58,16 +58,23 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        Collections.sort(dataItemList, new Comparator<DataItem>() {
+            @Override
+            public int compare(DataItem o1, DataItem o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+
 
         //Loop thru the data with a foreach loop
         //Using an instance of the DataItem class called item that I will get from the dataItemList
-        for (DataItem item: dataItemList) {
+        //for (DataItem item: dataItemList) {
             //tvOut.append(item.getName() + "\n");
-            itemNames.add(item.getName());
-        }
+            //itemNames.add(item.getName());
+        //}
         //B/c we are using simple Strings I can sort thru them using Collections
         // whih are now ready for display
-        Collections.sort(itemNames);
+        //Collections.sort(itemNames);
 
         //In order to display data in a list view we need to use a class called an
         // Adapter = ArrayAdapter whose job is to cycle thru the adapter and then as needed
@@ -76,8 +83,12 @@ public class MainActivity extends AppCompatActivity {
         //At the mo the ArrayAdapter is managing String values, named adapter & will instantiate
         // it with a call to the ArrayAdapters Constructor Method:
         // Context = this (for current activity), layout resorce id (layout included by android), pass in dataObjects
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, itemNames);
+        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, itemNames);
         //Now we have to bind the adapter to the list view with a ref to the listView Object
+
+        //We need to create our Custom DataAdapter
+        DataItemAdapter adapter = new DataItemAdapter(this, dataItemList);
+
         ListView listView = (ListView) findViewById(android.R.id.list);
         //Bind the 2 objects together
         listView.setAdapter(adapter);

@@ -17,9 +17,9 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:contentDescription="Apple Pie"
-        android:layout_marginStart="18dp"
-        android:layout_marginLeft="18dp"
-        android:layout_marginTop="14dp"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:layout_marginTop="10sp"
         app:srcCompat="@drawable/apple_pie"
         tools:ignore="HardcodedText" />
 
@@ -33,6 +33,6 @@
         android:layout_marginStart="75dp"
         android:layout_marginLeft="75dp"
         android:text="A menu item"
-        android:textSize="24sp"
+        android:textSize="16sp"
         tools:ignore="HardcodedText" />
 </RelativeLayout>
