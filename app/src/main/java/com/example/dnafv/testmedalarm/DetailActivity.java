@@ -1,26 +1,64 @@
 package com.example.dnafv.testmedalarm;
 
-import android.support.v7.app.AppCompatActivity;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.widget.Toast;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+
+import com.example.dnafv.testmedalarm.DataItemAdapter;
+import com.example.dnafv.testmedalarm.R;
 import com.example.dnafv.testmedalarm.model.DataItem;
-import com.example.dnafv.testmedalarm.sampleData.SampleDataProvider;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.NumberFormat;
+import java.util.Locale;
+
+@SuppressWarnings("FieldCanBeLocal")
 public class DetailActivity extends AppCompatActivity {
+
+    private TextView tvName, tvDescription, tvPrice;
+    private ImageView itemImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        DataItem item = getIntent().getExtras().getParcelable(DataItemAdapter.ITEM_KEY);
+        if (item == null) {
+            throw new AssertionError("Null data item received!");
+        }
 
-        //To get to the Intent that launched the activity - call the getIntent Method & from
-        // that I can get access to getExtras which gives me access to any of the extra values
-        // passed in
-        String itemId = getIntent().getExtras().getString(DataItemAdapter.ITEM_ID_KEY);
-        //The ItemId gives me access to the the selected dataItems attributes from the DataStore
-        // - which is the Sample Data Provider - the staticMap named DataItemMap
-        DataItem item = SampleDataProvider.dataItemMap.get(itemId);
-        Toast.makeText(this, "Received item " + item.getName(), Toast.LENGTH_SHORT).show();
+        tvName = (TextView) findViewById(R.id.tvItemName);
+        tvPrice = (TextView) findViewById(R.id.tvPrice);
+        tvDescription = (TextView) findViewById(R.id.tvDescription);
+        itemImage = (ImageView) findViewById(R.id.itemImage);
+
+        tvName.setText(item.getName());
+        tvDescription.setText(item.getDescription());
+
+        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.getDefault());
+        tvPrice.setText(nf.format(item.getPrice()));
+
+        InputStream inputStream = null;
+        try {
+            String imageFile = item.getImage();
+            inputStream = getAssets().open(imageFile);
+            Drawable d = Drawable.createFromStream(inputStream, null);
+            itemImage.setImageDrawable(d);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
+
 }

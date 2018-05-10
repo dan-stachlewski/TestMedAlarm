@@ -1,10 +1,13 @@
 package com.example.dnafv.testmedalarm.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.UUID;
 
 /** Example of DataItem Class that is used to populate the app with data */
 
-public class DataItem {
+public class DataItem implements Parcelable {
 
     /** These are the variables that hold the data being entered into the app */
     //This will be the PK
@@ -32,7 +35,7 @@ public class DataItem {
      * & saves the arg values to each field
      */
 
-    public DataItem(String itemId, String name, String description, String category, int sortPosition, double price, String image) {
+    public DataItem(String itemId, String name, String category, String description, int sortPosition, double price, String image) {
 
         //If we are creating a new object and it doesn't have a UUID (Universal Unique Identifier) then create one now.
         if(itemId == null){
@@ -110,6 +113,8 @@ public class DataItem {
         this.image = image;
     }
 
+
+
     /**
      * Add an Implementation of the StringTo Method
      * which returns STRING which reflects all the current values for the current instance of the class
@@ -127,4 +132,42 @@ public class DataItem {
                 ", image='" + image + '\'' +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.itemId);
+        dest.writeString(this.Name);
+        dest.writeString(this.description);
+        dest.writeString(this.Category);
+        dest.writeInt(this.sortPosition);
+        dest.writeDouble(this.price);
+        dest.writeString(this.image);
+    }
+
+    protected DataItem(Parcel in) {
+        this.itemId = in.readString();
+        this.Name = in.readString();
+        this.description = in.readString();
+        this.Category = in.readString();
+        this.sortPosition = in.readInt();
+        this.price = in.readDouble();
+        this.image = in.readString();
+    }
+
+    public static final Parcelable.Creator<DataItem> CREATOR = new Parcelable.Creator<DataItem>() {
+        @Override
+        public DataItem createFromParcel(Parcel source) {
+            return new DataItem(source);
+        }
+
+        @Override
+        public DataItem[] newArray(int size) {
+            return new DataItem[size];
+        }
+    };
 }

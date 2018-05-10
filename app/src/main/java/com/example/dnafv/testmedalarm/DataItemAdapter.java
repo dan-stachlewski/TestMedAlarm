@@ -23,6 +23,7 @@ import java.util.List;
 public class DataItemAdapter extends RecyclerView.Adapter<DataItemAdapter.ViewHolder> {
 
     public static final String ITEM_ID_KEY = "item_id_key";
+    public static final String ITEM_KEY = "item_key";
     private List<DataItem> mItems;
     private Context mContext;
 
@@ -69,10 +70,11 @@ public class DataItemAdapter extends RecyclerView.Adapter<DataItemAdapter.ViewHo
                 //Toast.makeText(mContext, "You selected " + item.getName(), Toast.LENGTH_SHORT).show();
 
                 //NOw have a UUID to pass b/w activities
-                String itemId = item.getItemId();
+                //String itemId = item.getItemId();
+                //Now instead of passing the PK, I am passing the entire dataObject
                 Intent intent = new Intent(mContext, DetailActivity.class);
                 //Pass the UUID that Id's each item
-                intent.putExtra(ITEM_ID_KEY, itemId);
+                intent.putExtra(ITEM_KEY, item);
                 //The below code launches the DetailsActivity displaying an Item's details
                 mContext.startActivity(intent);
             }
