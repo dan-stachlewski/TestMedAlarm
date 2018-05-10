@@ -1,5 +1,7 @@
 package com.example.dnafv.testmedalarm;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.dnafv.testmedalarm.model.DataItem;
 import com.example.dnafv.testmedalarm.sampleData.SampleDataProvider;
@@ -21,6 +24,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int SIGNIN_REQUEST = 1001;
+    public static final String MY_GLOBAL_PREFS = "my_global_prefs";
 
     //We are working with a single Object made
     //Now we have all that data avaliable to the Activity Class
@@ -108,13 +113,31 @@ public class MainActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        switch(item.getItemId()){
+            case R.id.action_signin:
+                Intent intent = new Intent(this, SigninActivity.class);
+                startActivityForResult(intent, SIGNIN_REQUEST);
+            case R.id.action_settings:
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK && requestCode == SIGNIN_REQUEST) {
+            String email = data.getStringExtra(SigninActivity.EMAIL_KEY);
+            Toast.makeText(this, "You signed in as " + email, Toast.LENGTH_SHORT).show();
+
+            //We want to save the entered email address in the email field so the user doesn't
+            // need to keep adding it again & again
+            SharedPreferences.Editor editor = getSharedPreferences(MY_GLOBAL_PREFS,MODE_PRIVATE).edit();
+            editor.putString(SigninActivity.EMAIL_KEY, email);
+            editor.apply();
+
         }
 
-        return super.onOptionsItemSelected(item);
     }
 }
