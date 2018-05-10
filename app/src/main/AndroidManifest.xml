@@ -28,15 +28,31 @@
         <activity
             android:name=".DetailActivity"
             android:parentActivityName=".MainActivity"
-            tools:targetApi="jelly_bean" />
+            tools:targetApi="jelly_bean">
 
         <meta-data
-            android:name="android.stpport.PARENT_ACTIVITY"
+            android:name="android.support.PARENT_ACTIVITY"
             android:value=".MainActivity" />
-
+        </activity>
         <activity
             android:name=".SigninActivity"
-            android:label="@string/title_activity_signin"></activity>
+            android:label="@string/title_activity_signin"
+            android:parentActivityName=".MainActivity"
+            tools:targetApi="jelly_bean">
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".MainActivity" />
+        </activity>
+        <activity android:name=".PrefsActivity"
+            android:parentActivityName=".MainActivity"
+            tools:targetApi="jelly_bean">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:label="@string/title_activity_settings"
+                android:value=".MainActivity" />
+        </activity>
+
+
     </application>
 
 </manifest>

@@ -3,9 +3,11 @@ package com.example.dnafv.testmedalarm;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -92,9 +94,18 @@ public class MainActivity extends AppCompatActivity {
         //DataItemAdapterListView adapter = new DataItemAdapterListView(this, dataItemList);
         DataItemAdapter adapter = new DataItemAdapter(this, dataItemList);
 
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean grid = settings.getBoolean(getString(R.string.prefs_display_grid), false);
+
+
         //ListView listView = (ListView) findViewById(android.R.id.list);
         //The recyclerView is connected to the vrItems RecyclerView in content_main.xml
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvItems);
+        if(grid){
+            //The 3 will create a display with 3 cols (within the Grid)
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        }
+
         //Bind the 2 objects together
         //listView.setAdapter(adapter);
         recyclerView.setAdapter(adapter);
@@ -117,7 +128,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_signin:
                 Intent intent = new Intent(this, SigninActivity.class);
                 startActivityForResult(intent, SIGNIN_REQUEST);
+                return true;
             case R.id.action_settings:
+                Intent settingsIntent = new Intent(this, PrefsActivity.class);
+                startActivity(settingsIntent);
                 return true;
         }
         return super.onOptionsItemSelected(item);
