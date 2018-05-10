@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.example.dnafv.testmedalarm.model.DataItem;
 import com.example.dnafv.testmedalarm.sampleData.SampleDataProvider;
+import com.example.dnafv.testmedalarm.utils.JSONHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -146,6 +147,16 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_settings:
                 Intent settingsIntent = new Intent(this, PrefsActivity.class);
                 startActivity(settingsIntent);
+                return true;
+            case R.id.action_export:
+                boolean result = JSONHelper.exportToJSON(this, dataItemList);
+                if(result){
+                    Toast.makeText(this, "Data Exported", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(this, "Export Failed", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            case R.id.action_import:
                 return true;
         }
         return super.onOptionsItemSelected(item);
