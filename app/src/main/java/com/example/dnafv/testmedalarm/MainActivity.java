@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_PERMISSION_WRITE = 1001;
     public static final String FILE_NAME = "lorem_ipsum.text";
     private boolean permissionGranted;
+    private static final String TAG = "MainActivity";
 
     //We are working with a single Object made
     //Now we have all that data avaliable to the Activity Class
@@ -157,6 +159,13 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return true;
             case R.id.action_import:
+                List<DataItem>dataItems = JSONHelper.importFromResource(this);
+                if(dataItems != null){
+                    for (DataItem dataItem :
+                            dataItems) {
+                        Log.i(TAG, "onOptionsItemSelected: " + dataItem.getName());
+                    }
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
