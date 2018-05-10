@@ -1,11 +1,17 @@
 package com.example.dnafv.testmedalarm;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,11 +20,15 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dnafv.testmedalarm.model.DataItem;
 import com.example.dnafv.testmedalarm.sampleData.SampleDataProvider;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int SIGNIN_REQUEST = 1001;
     public static final String MY_GLOBAL_PREFS = "my_global_prefs";
+
+    private static final int REQUEST_PERMISSION_WRITE = 1001;
+    public static final String FILE_NAME = "lorem_ipsum.text";
+    private boolean permissionGranted;
 
     //We are working with a single Object made
     //Now we have all that data avaliable to the Activity Class
@@ -42,6 +56,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        checkPermissions();
+
+        Collections.sort(dataItemList, new Comparator<DataItem>() {
+            @Override
+            public int compare(DataItem o1, DataItem o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
 
         //The tells the framework to open the activity_main.xml file file associated with the
         // MainActivity.java file
@@ -60,15 +83,6 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-
-
-        Collections.sort(dataItemList, new Comparator<DataItem>() {
-            @Override
-            public int compare(DataItem o1, DataItem o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
-
 
         //Loop thru the data with a foreach loop
         //Using an instance of the DataItem class called item that I will get from the dataItemList
@@ -153,5 +167,116 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    private File getFile(){
+        return new File(
+                Environment.getExternalStorageDirectory(), FILE_NAME);
+    }
+
+    public void onCreateButtonClick(View view){
+        if(!permissionGranted){
+            checkPermissions();
+            return;
+        }
+
+
+        String string = getString(R.string.lorem_ipsum);
+
+        FileOutputStream fileOutputStream = null;
+        File file = getFile();
+
+        try {
+            fileOutputStream = new FileOutputStream(file);
+            fileOutputStream.write(string.getBytes());
+            Toast.makeText(this, "File written: " + FILE_NAME, Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Exception: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }finally{
+            try {
+                fileOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    public void onReadButtonClick(View view){
+        if(!permissionGranted){
+            checkPermissions();
+            return;
+        }
+    }
+
+    public void onDeleteButtonClick(View view){
+        if(!permissionGranted){
+            checkPermissions();
+            return;
+        }
+
+        File file = getFile();
+        if(file.exists()){
+            file.delete();
+            Toast.makeText(this, "File deleted!", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(this, "File doesn't exist!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    /* Checks if external storage is available for read and write */
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(state);
+    }
+
+    /* Checks if external storage is available to at least read */
+    public boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        return (Environment.MEDIA_MOUNTED.equals(state) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state));
+    }
+
+    // Initiate request for permissions.
+    private boolean checkPermissions() {
+        //Checks to see if you have the folloiwng permissions or not
+        //if either returns false you cant access readable or writable storage
+        if (!isExternalStorageReadable() || !isExternalStorageWritable()) {
+            Toast.makeText(this, "This app only works on devices with usable external storage",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        int permissionCheck = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_PERMISSION_WRITE);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    // Handle permissions result
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_PERMISSION_WRITE:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    permissionGranted = true;
+                    Toast.makeText(this, "External storage permission granted",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "You must grant permission!", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
     }
 }
