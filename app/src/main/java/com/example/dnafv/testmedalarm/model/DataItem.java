@@ -1,5 +1,7 @@
 package com.example.dnafv.testmedalarm.model;
 
+import java.util.UUID;
+
 /** Example of DataItem Class that is used to populate the app with data */
 
 public class DataItem {
@@ -31,6 +33,12 @@ public class DataItem {
      */
 
     public DataItem(String itemId, String name, String description, String category, int sortPosition, double price, String image) {
+
+        //If we are creating a new object and it doesn't have a UUID (Universal Unique Identifier) then create one now.
+        if(itemId == null){
+            itemId = UUID.randomUUID().toString();
+        }
+
         this.itemId = itemId;
         Name = name;
         this.description = description;
