@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         DataItemAdapter adapter = new DataItemAdapter(this, dataItemList);
 
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean grid = settings.getBoolean(getString(R.string.prefs_display_grid), false);
+        boolean grid = settings.getBoolean(getString(R.string.pref_display_grid), false);
 
 
         //ListView listView = (ListView) findViewById(android.R.id.list);

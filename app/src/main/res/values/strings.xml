@@ -16,9 +16,15 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="sign_in">Sign In</string>
-    <string name="display_in_grid" />prefs
+
+
     <string name="display_in_string_prefs_summary" />
-    <string name="prefs_display_grid" />
+
+
+
+    <string name="sign_in">Sign In</string>
+    <string name="pref_display_grid">pref_display_grid</string>
     <string name="settings">Settings</string>
+    <string name="display_in_grid">Display in grid</string>
+
 </resources>

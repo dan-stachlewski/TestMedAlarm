@@ -3,7 +3,8 @@
 
     <CheckBoxPreference
         android:defaultValue="false"
-        android:key="prefs_display_grid"
+        android:key="@string/pref_display_grid"
         android:summary="Display list items in a grid format"
         android:title="Display in Grid" />
+
 </PreferenceScreen>

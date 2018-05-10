@@ -2,8 +2,11 @@ package com.example.dnafv.testmedalarm;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +30,9 @@ public class DataItemAdapter extends RecyclerView.Adapter<DataItemAdapter.ViewHo
     private List<DataItem> mItems;
     private Context mContext;
 
+    //On change Listener to keep an eye out for app changes made by the user
+    private SharedPreferences.OnSharedPreferenceChangeListener prefsListener;
+
     public DataItemAdapter(Context context, List<DataItem> items) {
         this.mContext = context;
         this.mItems = items;
@@ -35,13 +41,33 @@ public class DataItemAdapter extends RecyclerView.Adapter<DataItemAdapter.ViewHo
     //This method is called auto by the adapter each time it needs a NEW visual rep of a data item
     @Override
     public DataItemAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(mContext);
+        boolean grid = settings.getBoolean(mContext.getString(R.string.pref_display_grid), false);
+
+        prefsListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                //The below code will log the message for us showing which prefs changed
+                Log.i("preferences", "onSharedPreferenceChanged:" + key);
+            }
+        };
+        //Register listener with appropriate listener set
+        settings.registerOnSharedPreferenceChangeListener(prefsListener);
+
+        //This code checks which layout is being asked for and provides it in the itemView - its
+        // a ternary operator shorthand.
+        int layoutId = grid ? R.layout.grid_item : R.layout.list_item;
+
+
         LayoutInflater inflater = LayoutInflater.from(mContext);
         //It inflates the list_item.xml layout file, it retrieves a view that is wrapped in an
         // instance of the ViewHolder class and returns the object
-        View itemView = inflater.inflate(R.layout.list_item, parent, false);
+        View itemView = inflater.inflate(layoutId, parent, false);
         ViewHolder viewHolder = new ViewHolder(itemView);
         return viewHolder;
     }
+
 
     //This method is called each time the adapter encounters a NEW dataItem that needs to
     // be displayed - it passes the reference to the ViewHolder and the position of the data item
