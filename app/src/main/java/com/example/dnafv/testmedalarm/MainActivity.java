@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.os.Environment;
@@ -80,6 +81,23 @@ public class MainActivity extends AppCompatActivity {
         mDataSource = new DataSource(this);
         mDataSource.open();
         Toast.makeText(this, "Database acquired!", Toast.LENGTH_SHORT).show();
+
+        long numItems = mDataSource.getDataItemsCount();
+        if(numItems == 0){
+            for(DataItem item:
+                    dataItemList){
+                try {
+                    mDataSource.createItem(item);
+                } catch (SQLiteException e) {
+                    e.printStackTrace();
+                }
+            }
+            Toast.makeText(this, "Data Inserted!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Data already Inserted!", Toast.LENGTH_SHORT).show();
+        }
+        
+
 
         checkPermissions();
 
