@@ -80,33 +80,22 @@ public class MainActivity extends AppCompatActivity {
 
         mDataSource = new DataSource(this);
         mDataSource.open();
-        Toast.makeText(this, "Database acquired!", Toast.LENGTH_SHORT).show();
-
-        long numItems = mDataSource.getDataItemsCount();
-        if(numItems == 0){
-            for(DataItem item:
-                    dataItemList){
-                try {
-                    mDataSource.createItem(item);
-                } catch (SQLiteException e) {
-                    e.printStackTrace();
-                }
-            }
-            Toast.makeText(this, "Data Inserted!", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Data already Inserted!", Toast.LENGTH_SHORT).show();
-        }
-        
-
+        mDataSource.seedDatabase(dataItemList);
 
         checkPermissions();
 
+        /*
         Collections.sort(dataItemList, new Comparator<DataItem>() {
             @Override
             public int compare(DataItem o1, DataItem o2) {
                 return o1.getName().compareTo(o2.getName());
             }
         });
+        */
+
+        List<DataItem> listFromDB = mDataSource.getAllItems();
+
+        DataItemAdapter adapter = new DataItemAdapter(this, listFromDB);
 
         //The tells the framework to open the activity_main.xml file file associated with the
         // MainActivity.java file
@@ -148,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
         //We need to create our Custom DataAdapter
         //DataItemAdapterListView adapter = new DataItemAdapterListView(this, dataItemList);
-        DataItemAdapter adapter = new DataItemAdapter(this, dataItemList);
+        //DataItemAdapter adapter = new DataItemAdapter(this, dataItemList);
 
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         boolean grid = settings.getBoolean(getString(R.string.pref_display_grid), false);
