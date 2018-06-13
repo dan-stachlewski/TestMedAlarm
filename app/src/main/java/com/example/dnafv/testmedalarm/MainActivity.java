@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -24,6 +26,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.dnafv.testmedalarm.database.DBHelper;
 import com.example.dnafv.testmedalarm.model.DataItem;
 import com.example.dnafv.testmedalarm.sampleData.SampleDataProvider;
 import com.example.dnafv.testmedalarm.utils.JSONHelper;
@@ -55,11 +58,20 @@ public class MainActivity extends AppCompatActivity {
     //New List made up of simple string values & use the foreach loop to cycle through each datum
     //in the array
     List<String>itemNames = new ArrayList<>();
+    
+    //Creating a reference to the SQLite Database Object named database:
+    SQLiteDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //Initialize the DB in the onCreate Method
+        SQLiteOpenHelper dbHelper = new DBHelper(this);
+        database = dbHelper.getWritableDatabase();
+        //Add toast Msg advising the DB has been created:
+        Toast.makeText(this, "Database acquired!", Toast.LENGTH_SHORT).show();
+        
         checkPermissions();
 
         Collections.sort(dataItemList, new Comparator<DataItem>() {
