@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dnafv.testmedalarm.database.DBHelper;
+import com.example.dnafv.testmedalarm.database.DataSource;
 import com.example.dnafv.testmedalarm.model.DataItem;
 import com.example.dnafv.testmedalarm.sampleData.SampleDataProvider;
 import com.example.dnafv.testmedalarm.utils.JSONHelper;
@@ -55,23 +56,31 @@ public class MainActivity extends AppCompatActivity {
     List<DataItem>dataItemList = SampleDataProvider.dataItemList;
 
 
+
+
     //New List made up of simple string values & use the foreach loop to cycle through each datum
     //in the array
     List<String>itemNames = new ArrayList<>();
     
     //Creating a reference to the SQLite Database Object named database:
-    SQLiteDatabase database;
+    //SQLiteDatabase database;
+
+    DataSource mDataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         //Initialize the DB in the onCreate Method
-        SQLiteOpenHelper dbHelper = new DBHelper(this);
-        database = dbHelper.getWritableDatabase();
+        //SQLiteOpenHelper dbHelper = new DBHelper(this);
+        //database = dbHelper.getWritableDatabase();
         //Add toast Msg advising the DB has been created:
+        //Toast.makeText(this, "Database acquired!", Toast.LENGTH_SHORT).show();
+
+        mDataSource = new DataSource(this);
+        mDataSource.open();
         Toast.makeText(this, "Database acquired!", Toast.LENGTH_SHORT).show();
-        
+
         checkPermissions();
 
         Collections.sort(dataItemList, new Comparator<DataItem>() {
@@ -138,6 +147,18 @@ public class MainActivity extends AppCompatActivity {
         //Bind the 2 objects together
         //listView.setAdapter(adapter);
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mDataSource.close();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mDataSource.open();
     }
 
     //This method loads the menu that sits at the top of the device
